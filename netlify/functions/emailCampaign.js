@@ -44,7 +44,9 @@ exports.handler = async function (event) {
         body: JSON.stringify({ message: 'Email sent successfully!' })
       };
     } catch (error) {
-      console.error("error occured ", error)
-      
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: "error occured - " +error })
+      };
     }
   };
