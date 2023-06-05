@@ -45,7 +45,6 @@ exports.handler = async function (event) {
       };
     } catch (error) {
       return {
-        statusCode: error.response.status,
         body: JSON.stringify({ error: error.response.data })
       };
     }
