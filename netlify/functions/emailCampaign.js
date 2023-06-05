@@ -2,42 +2,36 @@ const axios = require('axios');
 
 exports.handler = async function (event) {
     try {
-      const { email } = JSON.parse(event.body);
+      const { email, message, subject } = JSON.parse(event.body);
   
-      const activeCampaignUrl = 'https://ytjetpack.api-us1.com/';
+      const activeCampaignUrl = 'https://ytjetpack.activehosted.com/';
       const activeCampaignApiKey = '7ee347d48c162d68f11d88b8b1b2647118690d262c13ab915b2f0597579bc569fc8a1dd8';
-  
-      // Create a contact in ActiveCampaign
-      const contactResponse = await axios.post(
-        activeCampaignUrl + 'contacts',
-        {
-          contact: {
+      const endpoint = activeCampaignUrl + "campaigns";
+
+      const requestData = {
+        name: subject,
+        message: message,
+        contacts: [
+          {
             email: email
           }
-        },
-        {
-          headers: {
-            'Api-Token': activeCampaignApiKey
-          }
-        }
-      );
+        ]
+      };
+
+
   
-      // Get the newly created contact ID
-      const contactId = contactResponse.data.contact.id;
-  
-      // Send an email to the contact using a campaign ID
-      const campaignId = '25';
-      await axios.post(
-        activeCampaignUrl + 'campaigns/' + campaignId + '/singles',
-        {
-          contact: contactId
-        },
-        {
-          headers: {
-            'Api-Token': activeCampaignApiKey
-          }
+      const response = await axios.post(endpoint, requestData, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Api-Token': activeCampaignApiKey
         }
-      );
+      });
+  
+      if (response.status === 200) {
+        console.log('Email sent successfully!');
+      } else {
+        console.error('Failed to send the email.');
+      }
   
       return {
         statusCode: 200,
@@ -46,7 +40,7 @@ exports.handler = async function (event) {
     } catch (error) {
       return {
         statusCode: 400,
-        body: JSON.stringify({ error: "error occured - " +error })
+        body: JSON.stringify({ error: "error occured - " + error })
       };
     }
   };
