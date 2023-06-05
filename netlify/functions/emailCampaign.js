@@ -44,8 +44,7 @@ exports.handler = async function (event) {
         body: JSON.stringify({ message: 'Email sent successfully!' })
       };
     } catch (error) {
-      return {
-        body: JSON.stringify({ error: error.response.data })
-      };
+      console.error("error occured ", error)
+      
     }
   };
